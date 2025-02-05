@@ -1,0 +1,42 @@
+.hidden {
+  display: none !important;
+}
+
+.container {
+  max-width: 575px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.column-full,
+.column-half,
+.column-fourth {
+  width: 100%;
+}
+
+@media screen and (width >= 768px) {
+  .container {
+    max-width: 900px;
+  }
+
+  .column-half {
+    width: 50%;
+  }
+
+  .column-fourth {
+    width: 22%;
+  }
+
+  .margin-left {
+    margin-left: 0.5rem;
+  }
+
+  .margin-right {
+    margin-right: 0.5rem;
+  }
+}
