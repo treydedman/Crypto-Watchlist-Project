@@ -93,15 +93,6 @@ searchButton.addEventListener('click', async () => {
       if (existingBtn) {
         existingBtn.remove();
       }
-      addToWatchlistBtn.addEventListener('click', () => {
-        console.log('Add to watchlist clicked!');
-
-        // // Save the asset to the watchlist using the `addAsset` function from `data.ts`
-        // addAsset(asset);
-
-        // Display message to the user
-        alert(`${asset.name} has been added to your watchlist!`);
-      });
 
       // Append the add to watchlist button to the cryptoDataDiv
       cryptoDataDiv.appendChild(addToWatchlistBtn);
