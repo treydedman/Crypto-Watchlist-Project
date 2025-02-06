@@ -13,22 +13,6 @@ const searchButton = document.getElementById(
   'searchButton',
 ) as HTMLButtonElement;
 const cryptoDataDiv = document.getElementById('crypto-data') as HTMLDivElement;
-const dataName = document.getElementById('dataName') as HTMLHeadingElement;
-const dataSymbol = document.getElementById(
-  'dataSymbol',
-) as HTMLParagraphElement;
-const dataPriceUsd = document.getElementById(
-  'dataPriceUsd',
-) as HTMLHeadingElement;
-const dataChangePercent24Hr = document.getElementById(
-  'dataChangePercent24Hr',
-) as HTMLParagraphElement;
-const marketCapLabel = document.querySelector(
-  '.market-cap',
-) as HTMLHeadingElement;
-const dataMarketCapUsd = document.getElementById(
-  'dataMarketCapUsd',
-) as HTMLHeadingElement;
 
 // Function to fetch crypto data by name and set it to lower case for API requirements
 const apiUrl = 'https://api.coincap.io/v2/assets';
@@ -55,48 +39,66 @@ async function fetchCryptoData(name: string): Promise<Asset | null> {
 // Event listener for the search button click
 searchButton.addEventListener('click', async () => {
   const name = searchInput.value.trim();
+
   if (name) {
     const asset = await fetchCryptoData(name);
     if (asset) {
-      // Display the fetched asset data
-      dataName.textContent = asset.name;
-      dataSymbol.textContent = asset.symbol;
-      dataPriceUsd.textContent = `$${asset.priceUsd.toFixed(2)}`;
-      dataChangePercent24Hr.textContent = `${asset.changePercent24Hr.toFixed(2)}%`;
+      // Clear any previous data in the cryptoDataDiv
+      cryptoDataDiv.innerHTML = '';
 
-      // Set color classes
-      dataChangePercent24Hr.classList.remove('positive', 'negative');
+      // Dynamically create and append elements for the asset data
+      const dataNameElement = document.createElement('h2');
+      dataNameElement.classList.add('data-name');
+      dataNameElement.textContent = asset.name;
+      cryptoDataDiv.appendChild(dataNameElement);
 
-      // Apply correct class based on value
+      const dataSymbolElement = document.createElement('p');
+      dataSymbolElement.classList.add('data-symbol');
+      dataSymbolElement.textContent = asset.symbol;
+      cryptoDataDiv.appendChild(dataSymbolElement);
+
+      const dataPriceUsdElement = document.createElement('h1');
+      dataPriceUsdElement.classList.add('data-priceUsd');
+      dataPriceUsdElement.textContent = `$${asset.priceUsd.toFixed(2)}`;
+      cryptoDataDiv.appendChild(dataPriceUsdElement);
+
+      const dataChangePercent24HrElement = document.createElement('p');
+      dataChangePercent24HrElement.classList.add('data-changePercent24Hr');
+
+      // Check if changePercent24Hr is positive or negative
       if (asset.changePercent24Hr > 0) {
-        dataChangePercent24Hr.textContent = `+${asset.changePercent24Hr.toFixed(2)}% (24Hr)`;
-        dataChangePercent24Hr.classList.add('positive');
+        dataChangePercent24HrElement.textContent = `+${asset.changePercent24Hr.toFixed(2)}% (24Hr)`;
+        dataChangePercent24HrElement.classList.add('positive'); // Add class for positive change
       } else {
-        dataChangePercent24Hr.textContent = `${asset.changePercent24Hr.toFixed(2)}% (24Hr)`;
-        dataChangePercent24Hr.classList.add('negative');
+        dataChangePercent24HrElement.textContent = `${asset.changePercent24Hr.toFixed(2)}% (24Hr)`;
+        dataChangePercent24HrElement.classList.add('negative'); // Add class for negative change
       }
 
-      // Convert and display the market cap in billions
-      marketCapLabel.textContent = 'Market Cap';
-      dataMarketCapUsd.textContent = `$${(asset.marketCapUsd / 1_000_000_000).toFixed(2)} B`;
+      cryptoDataDiv.appendChild(dataChangePercent24HrElement);
 
-      // Display the data section
+      const marketCapLabelElement = document.createElement('h3');
+      marketCapLabelElement.classList.add('market-cap');
+      marketCapLabelElement.textContent = 'Market Cap';
+      cryptoDataDiv.appendChild(marketCapLabelElement);
+
+      const dataMarketCapUsdElement = document.createElement('h2');
+      dataMarketCapUsdElement.classList.add('data-marketCapUsd');
+      dataMarketCapUsdElement.textContent = `$${(asset.marketCapUsd / 1_000_000_000).toFixed(2)} B`;
+      cryptoDataDiv.appendChild(dataMarketCapUsdElement);
+
+      // Dynamically create Add to Watchlist button
+      // const addToWatchlistBtn = document.createElement('button');
+      // addToWatchlistBtn.textContent = 'Add to Watchlist';
+      // addToWatchlistBtn.classList.add('add-to-watchlist');
+      // addToWatchlistBtn.addEventListener('click', () => {
+      //   alert(`${asset.name} has been added to your watchlist!`);
+      // });
+      // cryptoDataDiv.appendChild(addToWatchlistBtn);
+
+      // Show the cryptoDataDiv after adding data
       cryptoDataDiv.style.display = 'block';
-
-      // Create the Add to Watchlist button dynamically
-      const addToWatchlistBtn = document.createElement('button');
-      addToWatchlistBtn.textContent = 'Add to Watchlist';
-      addToWatchlistBtn.classList.add('add-to-watchlist');
-
-      // Remove any existing "Add to Watchlist" button before appending a new one
-      const existingBtn = cryptoDataDiv.querySelector('.add-to-watchlist');
-      if (existingBtn) {
-        existingBtn.remove();
-      }
-
-      // Append the add to watchlist button to the cryptoDataDiv
-      cryptoDataDiv.appendChild(addToWatchlistBtn);
     } else {
+      console.log('No asset found for the given name');
       alert('Crypto name not found or invalid.');
     }
   } else {
