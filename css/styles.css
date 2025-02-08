@@ -211,3 +211,8 @@ input {
   margin-top: 2rem;
   white-space: pre-line;
 }
+
+.dash {
+  padding: 0;
+  margin: 0;
+}
