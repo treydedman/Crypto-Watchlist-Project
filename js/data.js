@@ -1,38 +1,24 @@
 'use strict';
 /* exported data */
-// // Interface for crypto Asset
-// interface Asset {
-//   name: string;
-//   symbol: string;
-//   priceUsd: number;
-//   changePercent24Hr: number;
-//   marketCapUsd: number;
-// }
-// // Interface for Data
-// interface Data {
-//   view: string;
-//   assets: Asset[];
-// }
-// const localStorageKey = 'crypto-watchlist';
-// // Write data to local storage
-// function writeData(): void {
-//   localStorage.setItem(localStorageKey, JSON.stringify(data));
-// }
-// // Load data from local storage
-// function loadData(): Data {
-//   const dataJSON = localStorage.getItem(localStorageKey);
-//   if (dataJSON) {
-//     return JSON.parse(dataJSON);
-//   } else {
-//     return {
-//       view: 'search',
-//       assets: [],
-//     };
-//   }
-// }
-// const data = loadData();
-// // Function to add a new asset to the beginning of the watchlist
-// function addAsset(asset: Asset): void {
-//   data.assets.unshift(asset);
-//   writeData();
-// }
+const localStorageKey = 'crypto-watchlist';
+// Write data to local storage
+function writeData() {
+  localStorage.setItem(localStorageKey, JSON.stringify(data));
+}
+// Load data from local storage with error handling
+function loadData() {
+  try {
+    const dataJSON = localStorage.getItem(localStorageKey);
+    if (dataJSON) {
+      const parsedData = JSON.parse(dataJSON);
+      return {
+        view: parsedData.view || 'watchlist', // Default view is now watchlist
+        assets: Array.isArray(parsedData.assets) ? parsedData.assets : [],
+      };
+    }
+  } catch (error) {
+    console.error('Error loading data from localStorage:', error);
+  }
+  return { view: 'watchlist', assets: [] }; // Default to watchlist view if there's an error or no data
+}
+const data = loadData();

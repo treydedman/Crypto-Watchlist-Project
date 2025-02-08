@@ -41,7 +41,6 @@ li {
   display: flex;
   justify-content: center;
   margin: 20px 0;
-  color: #8f8f8f;
 }
 
 .search-head {
@@ -58,6 +57,10 @@ li {
   font-size: 1.1rem;
 }
 
+.watchlist-btn:hover {
+  background-color: #46ad16;
+}
+
 input {
   height: 2rem;
   border-radius: 4px;
@@ -70,6 +73,10 @@ input {
   font-size: 1rem;
 }
 
+::placeholder {
+  color: #c7c7c7;
+}
+
 .search-btn {
   background-color: #0071ff;
   color: white;
@@ -78,6 +85,10 @@ input {
   border-radius: 4px;
   cursor: pointer;
   font-size: 1.1rem;
+}
+
+.search-btn:hover {
+  background-color: #0065e1;
 }
 
 #search-btn {
@@ -108,7 +119,11 @@ input {
   border: none;
   cursor: pointer;
   font-size: 1rem;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.add-to-watchlist:hover {
+  background-color: #ea8100;
 }
 
 .market-cap {
@@ -151,4 +166,48 @@ input {
 
 .negative {
   color: #ff000a;
+}
+
+.add-btn {
+  padding: 0.3rem 0.75rem;
+  background-color: #ff8d00;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  border: none;
+  font-size: 1.1rem;
+}
+
+.add-btn:hover {
+  background-color: #ea8100;
+}
+
+.watchlist-header {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.remove-from-watchlist {
+  padding: 0.3rem 0.75rem;
+  background-color: #5a5a5a;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  border: none;
+  font-size: 1.1rem;
+  margin-bottom: 0.75rem;
+  cursor: pointer;
+}
+
+.remove-from-watchlist:hover {
+  background-color: #000;
+}
+
+.empty-message {
+  text-align: center;
+  font-size: 1.5rem;
+  color: #ff000a;
+  margin-top: 2rem;
+  white-space: pre-line;
 }
