@@ -131,11 +131,6 @@ input {
   line-height: 110%;
 }
 
-.logo {
-  height: 25px;
-  width: 25px;
-}
-
 .data-symbol {
   color: #757575;
   line-height: 50%;
@@ -214,8 +209,6 @@ input {
   flex-wrap: wrap;
   justify-content: center;
   gap: 1rem;
-  margin-left: 0;
-  margin-right: 0;
 }
 
 .asset-icon {
@@ -233,7 +226,6 @@ input {
 }
 
 .dashboard-card {
-  align-items: center;
   width: 12.5rem;
   height: 19rem;
   background-color: white;
@@ -241,6 +233,12 @@ input {
   text-align: center;
   border: 1px solid #d8e2f5;
   padding: 1rem 0;
-  margin-left: 0;
-  margin-right: 0;
+}
+
+.top-crypto-message {
+  font-size: 1.5rem;
+  text-align: center;
+  margin-top: 1rem;
+  font-weight: bold;
+  display: block;
 }

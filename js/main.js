@@ -37,7 +37,7 @@ async function fetchCryptoData(name) {
   }
   return null;
 }
-// Holds data for the dashboard
+// Holds the data for the dashboard view
 let dashboardAssets = [];
 // Fetch the top 8 crypto based on market cap
 async function fetchDashboardAssets() {
@@ -247,48 +247,57 @@ function renderWatchlist() {
 // Function to render the top 8 crypto assets dynamically in the dashboard view
 function renderDashboard() {
   const dashContainer = document.querySelector('.dash');
-  if (!dashContainer) {
-    return;
+  if (!dashContainer) return;
+  // Get the message container
+  const messageContainer = document.querySelector(
+    '.top-crypto-message-container',
+  );
+  // Ensure the message exists and update its content
+  if (messageContainer) {
+    messageContainer.innerHTML = `<p class="top-crypto-message">Top 8 crypto on ${new Date().toLocaleDateString()}</p>`;
   }
-  dashContainer.innerHTML = '';
+  // If no assets are available, exit early
   if (!dashboardAssets || dashboardAssets.length === 0) {
     return;
   }
+  // Render each crypto asset
   dashboardAssets.forEach((asset) => {
-    // Create dashboard card
     const card = document.createElement('div');
     card.classList.add('dashboard-card');
-    // Name & Icon Container
+    // Create a container for the icon and name
     const nameContainer = document.createElement('div');
     nameContainer.classList.add('name-container');
+    // Asset Icon
     const iconElement = document.createElement('img');
     iconElement.classList.add('asset-icon');
     iconElement.src = `https://assets.coincap.io/assets/icons/${asset.symbol.toLowerCase()}@2x.png`;
     iconElement.alt = `${asset.name} icon`;
+    // Asset Name
     const dataNameElement = document.createElement('h2');
     dataNameElement.classList.add('data-name');
     dataNameElement.textContent = asset.name;
+    // Append icon and name to the container
     nameContainer.appendChild(iconElement);
     nameContainer.appendChild(dataNameElement);
     card.appendChild(nameContainer);
-    // Symbol
+    // Asset Symbol
     const dataSymbolElement = document.createElement('p');
     dataSymbolElement.classList.add('data-symbol');
     dataSymbolElement.textContent = asset.symbol;
     card.appendChild(dataSymbolElement);
-    // Price
+    // Asset Price
     const dataPriceUsdElement = document.createElement('h1');
     dataPriceUsdElement.classList.add('data-priceUsd');
     dataPriceUsdElement.textContent = `$${Number(asset.priceUsd).toFixed(2)}`;
     card.appendChild(dataPriceUsdElement);
-    // 24Hr Change
+    // Asset 24-Hour Change
     const dataChangePercent24HrElement = document.createElement('p');
     dataChangePercent24HrElement.classList.add('data-changePercent24Hr');
-    const changePercent = Number(asset.changePercent24Hr).toFixed(2);
-    dataChangePercent24HrElement.textContent = `${changePercent}% (24Hr)`;
     if (asset.changePercent24Hr > 0) {
+      dataChangePercent24HrElement.textContent = `+${Number(asset.changePercent24Hr).toFixed(2)}% (24Hr)`;
       dataChangePercent24HrElement.classList.add('positive');
     } else {
+      dataChangePercent24HrElement.textContent = `${Number(asset.changePercent24Hr).toFixed(2)}% (24Hr)`;
       dataChangePercent24HrElement.classList.add('negative');
     }
     card.appendChild(dataChangePercent24HrElement);
@@ -307,12 +316,12 @@ function renderDashboard() {
     addToWatchlistBtn.textContent = 'Add to Watchlist';
     addToWatchlistBtn.classList.add('add-to-watchlist');
     addToWatchlistBtn.addEventListener('click', () => {
-      addAsset(asset);
-      renderWatchlist();
-      viewSwap('watchlist');
+      addAsset(asset); // Add asset to watchlist
+      renderWatchlist(); // Update watchlist
+      viewSwap('watchlist'); // Switch to watchlist view
     });
     card.appendChild(addToWatchlistBtn);
-    // Append to Dashboard
+    // Append the card to the dashboard container
     dashContainer.appendChild(card);
   });
 }
@@ -416,15 +425,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const dashboardWatchlistBtn = document.querySelector(
     '[data-view="dashboard"] .watchlist-btn',
   );
-  if (!dashboardWatchlistBtn) {
-    console.warn('Dashboard My Watchlist button not found.');
-    return;
+  if (dashboardWatchlistBtn) {
+    dashboardWatchlistBtn.addEventListener('click', (event) => {
+      event.preventDefault();
+      viewSwap('watchlist');
+    });
   }
-  dashboardWatchlistBtn.addEventListener('click', (event) => {
-    event.preventDefault(); // Prevent default anchor behavior
-    console.log('Dashboard Watchlist button clicked, switching view...');
-    viewSwap('watchlist'); // Switch view
-  });
 });
 document.addEventListener('DOMContentLoaded', () => {
   // Set the initial view to the watchlist view
