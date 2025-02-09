@@ -511,6 +511,24 @@ navLinks.forEach((link) => {
   });
 });
 
+// Event listener for the "My Watchlist" button in the dashboard view
+document.addEventListener('DOMContentLoaded', () => {
+  const dashboardWatchlistBtn = document.querySelector(
+    '[data-view="dashboard"] .watchlist-btn',
+  );
+
+  if (!dashboardWatchlistBtn) {
+    console.warn('Dashboard My Watchlist button not found.');
+    return;
+  }
+
+  dashboardWatchlistBtn.addEventListener('click', (event) => {
+    event.preventDefault(); // Prevent default anchor behavior
+    console.log('Dashboard Watchlist button clicked, switching view...');
+    viewSwap('watchlist'); // Switch view
+  });
+});
+
 document.addEventListener('DOMContentLoaded', () => {
   // Set the initial view to the watchlist view
   viewSwap('watchlist');
