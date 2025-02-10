@@ -17,6 +17,11 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
+// Fetch data and render dashboard
+document.addEventListener('DOMContentLoaded', () => {
+  fetchDashboardAssets();
+});
+
 // Query the DOM elements
 const searchInput = document.getElementById('symbol') as HTMLInputElement;
 const searchButton = document.getElementById(
@@ -46,6 +51,28 @@ async function fetchCryptoData(name: string): Promise<Asset | null> {
     );
   }
   return null;
+}
+
+// Holds the data for the dashboard view
+let dashboardAssets: Asset[] = [];
+
+// Fetch the top 8 crypto based on market cap
+async function fetchDashboardAssets(): Promise<void> {
+  try {
+    const response = await fetch('https://api.coincap.io/v2/assets?limit=8');
+    const data = await response.json();
+    dashboardAssets = data.data.map((asset: any) => ({
+      name: asset.name,
+      symbol: asset.symbol,
+      priceUsd: parseFloat(asset.priceUsd),
+      changePercent24Hr: parseFloat(asset.changePercent24Hr),
+      marketCapUsd: parseFloat(asset.marketCapUsd),
+    }));
+
+    renderDashboard();
+  } catch (error) {
+    alert('Error fetching dashboard assets!');
+  }
 }
 
 // Function to get the current watchlist
@@ -95,11 +122,27 @@ function renderAsset(asset: Asset): void {
   const card = document.createElement('div');
   card.classList.add('card');
 
+  // Create a container for the icon and name
+  const nameContainer = document.createElement('div');
+  nameContainer.classList.add('name-container');
+
+  // Asset Icon
+  const iconElement = document.createElement('img');
+  iconElement.classList.add('asset-icon');
+  iconElement.src = `https://assets.coincap.io/assets/icons/${asset.symbol.toLowerCase()}@2x.png`;
+  iconElement.alt = `${asset.name} icon`;
+
   // Asset Name
   const dataNameElement = document.createElement('h2');
   dataNameElement.classList.add('data-name');
   dataNameElement.textContent = asset.name;
-  card.appendChild(dataNameElement);
+
+  // Append icon and name to the container
+  nameContainer.appendChild(iconElement);
+  nameContainer.appendChild(dataNameElement);
+
+  // Append the name container to the card
+  card.appendChild(nameContainer);
 
   // Asset Symbol
   const dataSymbolElement = document.createElement('p');
@@ -177,14 +220,31 @@ function renderWatchlist(): void {
 
   // Loop through each asset in the watchlist
   watchlist.forEach((asset) => {
+    // Create the card div
     const card = document.createElement('div');
     card.classList.add('card');
+
+    // Create a container for the icon and name
+    const nameContainer = document.createElement('div');
+    nameContainer.classList.add('name-container');
+
+    // Asset Icon
+    const iconElement = document.createElement('img');
+    iconElement.classList.add('asset-icon');
+    iconElement.src = `https://assets.coincap.io/assets/icons/${asset.symbol.toLowerCase()}@2x.png`;
+    iconElement.alt = `${asset.name} icon`;
 
     // Asset Name
     const dataNameElement = document.createElement('h2');
     dataNameElement.classList.add('data-name');
     dataNameElement.textContent = asset.name;
-    card.appendChild(dataNameElement);
+
+    // Append icon and name to the container
+    nameContainer.appendChild(iconElement);
+    nameContainer.appendChild(dataNameElement);
+
+    // Append the name container to the card
+    card.appendChild(nameContainer);
 
     // Asset Symbol
     const dataSymbolElement = document.createElement('p');
@@ -238,6 +298,106 @@ function renderWatchlist(): void {
     watchlistDiv.appendChild(card);
   });
 }
+
+// Function to render the top 8 crypto assets dynamically in the dashboard view
+function renderDashboard(): void {
+  const dashContainer = document.querySelector('.dash');
+  if (!dashContainer) return;
+
+  // Get the message container
+  const messageContainer = document.querySelector(
+    '.top-crypto-message-container',
+  );
+
+  // Ensure the message exists and update its content
+  if (messageContainer) {
+    messageContainer.innerHTML = `<p class="top-crypto-message">Top 8 crypto on ${new Date().toLocaleDateString()}</p>`;
+  }
+
+  // If no assets are available, exit early
+  if (!dashboardAssets || dashboardAssets.length === 0) {
+    return;
+  }
+
+  // Render each crypto asset
+  dashboardAssets.forEach((asset) => {
+    const card = document.createElement('div');
+    card.classList.add('dashboard-card');
+
+    // Create a container for the icon and name
+    const nameContainer = document.createElement('div');
+    nameContainer.classList.add('name-container');
+
+    // Asset Icon
+    const iconElement = document.createElement('img');
+    iconElement.classList.add('asset-icon');
+    iconElement.src = `https://assets.coincap.io/assets/icons/${asset.symbol.toLowerCase()}@2x.png`;
+    iconElement.alt = `${asset.name} icon`;
+
+    // Asset Name
+    const dataNameElement = document.createElement('h2');
+    dataNameElement.classList.add('data-name');
+    dataNameElement.textContent = asset.name;
+
+    // Append icon and name to the container
+    nameContainer.appendChild(iconElement);
+    nameContainer.appendChild(dataNameElement);
+    card.appendChild(nameContainer);
+
+    // Asset Symbol
+    const dataSymbolElement = document.createElement('p');
+    dataSymbolElement.classList.add('data-symbol');
+    dataSymbolElement.textContent = asset.symbol;
+    card.appendChild(dataSymbolElement);
+
+    // Asset Price
+    const dataPriceUsdElement = document.createElement('h1');
+    dataPriceUsdElement.classList.add('data-priceUsd');
+    dataPriceUsdElement.textContent = `$${Number(asset.priceUsd).toFixed(2)}`;
+    card.appendChild(dataPriceUsdElement);
+
+    // Asset 24-Hour Change
+    const dataChangePercent24HrElement = document.createElement('p');
+    dataChangePercent24HrElement.classList.add('data-changePercent24Hr');
+    if (asset.changePercent24Hr > 0) {
+      dataChangePercent24HrElement.textContent = `+${Number(asset.changePercent24Hr).toFixed(2)}% (24Hr)`;
+      dataChangePercent24HrElement.classList.add('positive');
+    } else {
+      dataChangePercent24HrElement.textContent = `${Number(asset.changePercent24Hr).toFixed(2)}% (24Hr)`;
+      dataChangePercent24HrElement.classList.add('negative');
+    }
+    card.appendChild(dataChangePercent24HrElement);
+
+    // Market Cap Label
+    const marketCapLabelElement = document.createElement('h3');
+    marketCapLabelElement.classList.add('market-cap');
+    marketCapLabelElement.textContent = 'Market Cap';
+    card.appendChild(marketCapLabelElement);
+
+    // Market Cap Value
+    const dataMarketCapUsdElement = document.createElement('h2');
+    dataMarketCapUsdElement.classList.add('data-marketCapUsd');
+    dataMarketCapUsdElement.textContent = `$${(Number(asset.marketCapUsd) / 1_000_000_000).toFixed(2)} B`;
+    card.appendChild(dataMarketCapUsdElement);
+
+    // Add to Watchlist Button
+    const addToWatchlistBtn = document.createElement('button');
+    addToWatchlistBtn.textContent = 'Add to Watchlist';
+    addToWatchlistBtn.classList.add('add-to-watchlist');
+    addToWatchlistBtn.addEventListener('click', () => {
+      addAsset(asset); // Add asset to watchlist
+      renderWatchlist(); // Update watchlist
+      viewSwap('watchlist'); // Switch to watchlist view
+    });
+    card.appendChild(addToWatchlistBtn);
+
+    // Append the card to the dashboard container
+    dashContainer.appendChild(card);
+  });
+}
+
+// Call this function when the dashboard view loads
+renderDashboard();
 
 // Event listener for the search button click
 searchButton.addEventListener('click', async () => {
@@ -358,6 +518,20 @@ navLinks.forEach((link) => {
       }
     }
   });
+});
+
+// Event listener for the "My Watchlist" button in the dashboard view
+document.addEventListener('DOMContentLoaded', () => {
+  const dashboardWatchlistBtn = document.querySelector(
+    '[data-view="dashboard"] .watchlist-btn',
+  );
+
+  if (dashboardWatchlistBtn) {
+    dashboardWatchlistBtn.addEventListener('click', (event) => {
+      event.preventDefault();
+      viewSwap('watchlist');
+    });
+  }
 });
 
 document.addEventListener('DOMContentLoaded', () => {
