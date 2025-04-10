@@ -1,3 +1,5 @@
+import { coinCap } from './config.js';
+
 // Interface for crypto Asset
 interface Asset {
   name: string;
@@ -30,11 +32,16 @@ const searchButton = document.getElementById(
 const cryptoDataDiv = document.getElementById('crypto-data') as HTMLDivElement;
 
 // Function to fetch crypto data by name and set it to lower case for API requirements
-const apiUrl = 'https://api.coincap.io/v2/assets';
+const apiUrl = 'https://rest.coincap.io/v3/assets';
+const headers = {
+  Authorization: `Bearer ${coinCap}`,
+};
 
 async function fetchCryptoData(name: string): Promise<Asset | null> {
   try {
-    const response = await fetch(`${apiUrl}/${name.toLowerCase()}`);
+    const response = await fetch(`${apiUrl}/${name.toLowerCase()}`, {
+      headers,
+    });
     const data = await response.json();
     if (data && data.data) {
       return {
@@ -59,7 +66,7 @@ let dashboardAssets: Asset[] = [];
 // Fetch the top 8 crypto based on market cap
 async function fetchDashboardAssets(): Promise<void> {
   try {
-    const response = await fetch('https://api.coincap.io/v2/assets?limit=8');
+    const response = await fetch(`${apiUrl}?limit=8`, { headers });
     const data = await response.json();
     dashboardAssets = data.data.map((asset: any) => ({
       name: asset.name,
