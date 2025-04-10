@@ -2,5 +2,3 @@ node_modules
 .DS_Store
 .vscode
 *.log
-ts/config.ts
-js/config.js
